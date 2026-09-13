@@ -7,7 +7,7 @@ def plant_carrot(size = [0, 0], start_loc = [0, 0]):
 
 def harvest_carrot(size = [0, 0], start_loc = [0, 0]):
 	move_to(start_loc)
-	harvest_full_field(size, start_loc)
+	harvest_full_field(Entities.Carrot, size, start_loc)
 
 def plant_carrot_single(x, y):
 	plant(Entities.Carrot)

@@ -1,6 +1,6 @@
 from Common import move_to, plant_full_field, harvest_full_field
 
-SUNFLOWER_COLLECT_COUNT = 30
+SUNFLOWER_COLLECT_COUNT = 64
 
 def plant_sunflower(size = [0, 0], start_loc = [0, 0]):
 	move_to()

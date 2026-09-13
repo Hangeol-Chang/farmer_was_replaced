@@ -1,7 +1,7 @@
 # threading main
 
 from Common import move_to
-from Initialize import initialize
+from Initialize import initialize, initialize_multi
 import E_carrot
 import E_pumpkin
 import E_sunflower
@@ -13,112 +13,88 @@ import E_cactus
 
 clear()
 harvest()
-initialize()
+initialize_multi()
 
-tasks_1 = {
+tasks = {
 	"sunflower" : {
-		"size" : [6, 6],
-		"start_loc" : [0, 0],
-		"repeat" : 6,
 		"plant_func" : E_sunflower.plant_sunflower,
 		"harvest_func" : E_sunflower.harvest_sunflower,
 	},
 	"grass" : {
-		"size" : [11, 11],
-		"start_loc" : [0, 0],
-		"repeat" : 1,
-		"plant_func" : E_grass.plant_grass,
+		# "plant_func" : E_grass.plant_grass,
+		"plant_func" : None,
 		"harvest_func" : E_grass.harvest_grass,
 	},
 	"tree" : {
-		"size" : [11, 11],
-		"start_loc" : [0, 0],
-		"repeat" : 1,
-		"plant_func" : E_tree.plant_tree,
+		# "plant_func" : E_tree.plant_tree,
+		"plant_func" : None,
 		"harvest_func" : E_tree.harvest_tree,
-	}
-}
-
-tasks_2 = {
-    "carrot" : {
-		"size" : [11, 11],
-		"start_loc" : [11, 0],
-		"repeat" : 3,
-		"plant_func" : E_carrot.plant_carrot,
-		"harvest_func" : E_carrot.harvest_carrot,
 	},
-    "pumpkin" : {
-		"size" : [11, 11],
-		"start_loc" : [11, 0],
-		"repeat" : 1,
-		"plant_func" : E_pumpkin.plant_pumpkin,
-		"harvest_func" : E_pumpkin.harvest_pumpkin,
-	},
-    "cactus" : {
-		"size" : [11, 11],
-		"start_loc" : [11, 0],
-		"repeat" : 1,
-		"plant_func" : E_cactus.plant_cactus,
+	"cactus" : {
+		# "plant_func" : E_cactus.plant_cactus,
+		"plant_func" : None,
 		"harvest_func" : E_cactus.harvest_cactus,
 	},
-}
-
-tasks_3 = {
+	"carrot" : {
+		# "plant_func" : E_carrot.plant_carrot,
+		"plant_func" : None,
+		"harvest_func" : E_carrot.harvest_carrot,
+	},
 	"pumpkin" : {
-		"size" : [11, 11],
-		"start_loc" : [0, 11],
-		"repeat" : 1,
 		"plant_func" : E_pumpkin.plant_pumpkin,
 		"harvest_func" : E_pumpkin.harvest_pumpkin,
 	},
-}
-
-tasks_4 = {
 	"maze" : {
-		"size" : [11, 11],
-		"start_loc" : [11, 11],
-		"repeat" : 1,
 		"plant_func" : E_maze.make_maze,
-		"harvest_func" : E_maze.solve_maze,
+		# "harvest_func" : E_maze.solve_maze,
+		"harvest_func" : E_maze.dormamu_i_came_to_bargain,
 	}
 }
 
-def drone_thread(tasks):
-	keys = []
-	for key in tasks:
-		keys.append(key)
+threads = {
+	"sunflower" : 0,
+	"grass" : 3,
+	"tree" : 2,
+	"cactus" : 2,
+	"carrot" : 3,
+	"pumpkin" : 2,
+	# "maze" : 3
+}
 
+spawnd = {
+	"sunflower" : 0,
+	"grass" : 0,
+	"tree" : 0,
+	"cactus" : 0,
+	"carrot" : 0,
+	"pumpkin" : 0,
+	# "maze" : 0
+}
+
+def drone_thread(tasks, start_loc = [0, 0], size = [8, 8]):
 	while True:
-		for i in range(len(keys)):
-			key = keys[i]
-			val = tasks[key]
+		if tasks["plant_func"] != None:
+			tasks["plant_func"](size, start_loc)
+		tasks["harvest_func"](size, start_loc)
 
-			for j in range(val["repeat"]):
-				size = val["size"]
-				if size == [0, 0]:
-					size = [get_world_size(), get_world_size()]
+drone_count = 1
 
-				val["plant_func"](size, val["start_loc"])
-				val["harvest_func"](size, val["start_loc"])
+spawn_clear_count = 0
+while spawn_clear_count < len(threads):
+	for key in threads:
+		if threads[key] > spawnd[key]:
+			start_loc = [drone_count%4 * 8, drone_count//4 * 8]
+			drone_count += 1
+			spawn_drone(drone_thread, tasks[key], start_loc, [8, 8])
+			spawnd[key] += 1
+
+		if spawnd[key] == threads[key]:
+			spawn_clear_count += 1
 
 
-def drone1_thread():
-	drone_thread(tasks_1)
-	pass
+for i in range(3):
+	start_loc = [drone_count%4 * 8, drone_count//4 * 8]
+	drone_count += 1
+	spawn_drone(drone_thread, tasks["maze"], start_loc, [8, 8])
 
-def drone2_thread():
-	drone_thread(tasks_2)
-	pass
-
-def drone3_thread():
-    drone_thread(tasks_3)
-    pass
-
-def drone4_thread():
-    drone_thread(tasks_4)
-    pass
-
-spawn_drone(drone2_thread)
-spawn_drone(drone3_thread)
-spawn_drone(drone4_thread)
-drone1_thread()
+drone_thread(tasks["sunflower"], [0, 0], [8, 8])

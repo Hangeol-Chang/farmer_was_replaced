@@ -31,7 +31,7 @@ def plant_full_field(entity, size = [0, 0], start_loc = [0, 0]):
 				move_to([x, y+1])
 		move_to([min(max_x - 1, x+1), start_loc[1]])
 
-def harvest_full_field(size = [0, 0], start_loc = [0, 0], use_fertilizer = False):
+def harvest_full_field(entity, size = [0, 0], start_loc = [0, 0], use_fertilizer = False):
 	move_to(start_loc)
 	max_x = min(get_world_size(), size[0] + start_loc[0])
 	max_y = min(get_world_size(), size[1] + start_loc[1])
@@ -43,6 +43,7 @@ def harvest_full_field(size = [0, 0], start_loc = [0, 0], use_fertilizer = False
 					use_item(Items.Fertilizer)
 					use_item(Items.Fertilizer)
 				harvest()
+			plant(entity)
 
 			if get_pos_y() < max_y - 1:
 				move_to([x, y+1])

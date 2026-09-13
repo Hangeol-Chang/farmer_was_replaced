@@ -1,4 +1,4 @@
-# maze
+# maze2
 from Common import *
 
 def make_maze(size = [0, 0], start_loc = [0, 0]):
@@ -7,26 +7,25 @@ def make_maze(size = [0, 0], start_loc = [0, 0]):
 	substance = size[0] * 2**(num_unlocked(Unlocks.Mazes) - 1)
 	substance = min(num_items(Items.Weird_Substance), substance)
 	use_item(Items.Weird_Substance, substance)
-
+	
 
 dirs = [North, East, South, West]
 
 def loop(x, y, target_x, target_y, visited):
 	if x == target_x and y == target_y:
-		harvest()
-		return True
+		return [x, y]
 
 	if (x, y) in visited:
-		return
+		return [-1, -1]
 	visited.add((x, y))
 	
 	for i in range(len(dirs)):
 		if can_move(dirs[i]):
 			move(dirs[i])
-			if loop(get_pos_x(), get_pos_y(), target_x, target_y, visited) == True:
-				return True
+			if loop(get_pos_x(), get_pos_y(), target_x, target_y, visited) != [-1, -1]:
+				return [x, y]
 			move(dirs[(i+2)% 4]) 
-	return False
+	return [-1, -1]
 
 def after_maze(size = [0, 0], start_loc = [0, 0]):
 	move_to(start_loc)
@@ -44,11 +43,25 @@ def after_maze(size = [0, 0], start_loc = [0, 0]):
 def solve_maze(size = [0, 0], start_loc = [0, 0]):
 	# move_to(start_loc)
 	target_x, target_y = measure()
-	visited = set()
+	visited = set()    
 	loop(get_pos_x(), get_pos_y(), target_x, target_y, visited)
+	harvest()
 
 	after_maze(size, start_loc)
 
 # reuse maze
-def dormamu_i_came_to_bargain():
-	pass
+def dormamu_i_came_to_bargain(size = [0, 0], start_loc = [0, 0]):
+	# move_to(start_loc)
+	loop_count = 0
+	while loop_count < 299:
+
+		target_x, target_y = measure()
+		loop_count += 1
+		visited = set()
+		loop(get_pos_x(), get_pos_y(), target_x, target_y, visited)
+
+		substance = size[0] * 2**(num_unlocked(Unlocks.Mazes) - 1)
+		substance = min(num_items(Items.Weird_Substance), substance)
+		use_item(Items.Weird_Substance, substance)
+
+	after_maze(size, start_loc)
