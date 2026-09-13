@@ -6,30 +6,32 @@ def plant_pumpkin(size = [0, 0], start_loc = [0, 0]):
 
 def check_growth_pumpkin(size = [0, 0], start_loc = [0, 0], prev_lists = []):
 	move_to(start_loc)
-	max_x = min(get_world_size(), size[0] + start_loc[0]) - start_loc[0]
-	max_y = min(get_world_size(), size[1] + start_loc[1]) - start_loc[1]
-
+	max_x = min(get_world_size(), size[0] + start_loc[0])
+	max_y = min(get_world_size(), size[1] + start_loc[1])
 
 	if len(prev_lists) == 0:
 		broken_pumpkin_lists = []
-		for x in range(max_x):
-			for y in range(max_y):
+		for x in range(start_loc[0], max_x):
+			for y in range(start_loc[1], max_y):
 				if get_entity_type() == Entities.Dead_Pumpkin:
 					plant(Entities.Pumpkin)
-					broken_pumpkin_lists.append((start_loc[0] + x, start_loc[1] + y))
-				move_to([start_loc[0] + x, min(start_loc[1] + y + 1, get_world_size() - 1)])
-			move_to([min(start_loc[0] + x + 1, get_world_size() - 1), start_loc[1]])
+					broken_pumpkin_lists.append((x, y))
+
+				if get_pos_y() < max_y - 1:
+					move_to([x, y+1])
+			move_to([min(max_x - 1, x+1), start_loc[1]])
 		return broken_pumpkin_lists
+
 	else :
+		broken_pumpkin_lists = []
 		for x, y in prev_lists:
-			broken_pumpkin_lists = []
 			move_to([x, y])
 			if get_entity_type() == Entities.Dead_Pumpkin:
 				plant(Entities.Pumpkin)
 				broken_pumpkin_lists.append((x, y))
 		return broken_pumpkin_lists
 
-def harvest_pumpkin(size = [0, 0], start_loc = [0, 0], next_plant_func_single = None, next_plant_size = [0, 0], next_plant_start_loc = [0, 0]):
+def harvest_pumpkin(size = [0, 0], start_loc = [0, 0]):
 	move_to(start_loc)
 	broken_pumpkins = check_growth_pumpkin(size, start_loc)
 	while len(broken_pumpkins) > 0:
