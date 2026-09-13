@@ -1,11 +1,12 @@
 import Initialize
 import Flower
+import Common
 
 Initialize.initialize()
 Flower.create_sunflower_farm()
 for i in range(3): # get power at first
 	Flower.harvest_all_sunflower()
-Initialize.return_to_origin()
+Common.move_to()
 # pet_the_piggy()
 
 # =================
@@ -51,7 +52,7 @@ while True:
 				# elif y in pumpkin_y:
 				# 	plant(Entities.Pumpkin)
 			
-				while get_water() <= 0.5 and num_items(Items.Water) > 0:
+				while get_water() <= 0.7 and num_items(Items.Water) > 0:
 					use_item(Items.Water)
 					
 			move(North)
@@ -64,4 +65,4 @@ while True:
 		Flower.harvest_all_sunflower()
 
 	# return to origin
-	Initialize.return_to_origin()
+	Common.move_to()

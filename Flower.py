@@ -98,7 +98,7 @@ def _get_sunflower_leaf_counts_and_loc_ordered():
 	return ret
 
 
-def harvest_all_sunflower():	
+def harvest_all_sunflower():
 	# goto 0, 0
 	while get_pos_x() > 0:
 		move(West)
@@ -129,7 +129,7 @@ def harvest_all_sunflower():
 		harvest()
 		plant(Entities.Sunflower)
 
-		while get_water() <= 0.5 and num_items(Items.Water) > 0:
+		while get_water() <= 0.7 and num_items(Items.Water) > 0:
 			use_item(Items.Water)
 
 		added = False

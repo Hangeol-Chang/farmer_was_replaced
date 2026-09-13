@@ -1,8 +1,4 @@
-def return_to_origin():
-	while get_pos_x() > 0:
-		move(West)
-	while get_pos_y() > 0:
-		move(South)
+import Common
 
 def initialize():
 	while get_pos_x() > 0:
@@ -13,6 +9,7 @@ def initialize():
 	# till all terrain
 	for x in range(get_world_size()):
 		for y in range(get_world_size()):
+			harvest()
 			if get_ground_type() == Grounds.Grassland:
 				till()
 			else:
